@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="./style/theme-chalk/index.css">
+    <link rel="stylesheet" href="./style/index.css">
+    <!-- 引入组件库 -->
+    <script src="./js/lib/vue.js"></script>
+    <script src="./js/lib/element-ui/index.js"></script>
+<script type="text/javascript" src="../../sdk/initSDK.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <el-container>
+            <el-header>配置JS SDK初始化内容</el-header>
+            <el-main>
+                <el-row>
+                    <el-col :span="24">
+                        <el-card class="box-card">
+                            <el-form ref="form" :model="form" label-width="80px">
+                                <el-form-item label="appkey">
+                                    <el-input v-model="form.appkey" placeholder="appkey"></el-input>
+                                </el-form-item>
+                                <el-form-item label="上报地址">
+                                    <el-input v-model="form.uploadURL" placeholder="uploadURL"></el-input>
+                                </el-form-item>
+                                <el-form-item label="可视化">
+                                    <el-input v-model="form.visitorConfigURL" placeholder="visitorConfigURL"></el-input>
+                                </el-form-item>
+                                <el-row>
+                                    <el-col :span="8">
+                                        <el-form-item label="自动采集">
+                                            <el-switch v-model="form.auto" placeholder="auto"></el-switch>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="8">
+                                        <el-form-item label="单页面">
+                                            <el-switch v-model="form.hash" placeholder="hash"></el-switch>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="8">
+                                        <el-form-item label="首次属性">
+                                            <el-switch v-model="form.autoProfile" placeholder="autoProfile"></el-switch>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="8">
+                                        <el-form-item label="全埋点">
+                                            <el-switch v-model="form.autoTrack" placeholder="autoTrack"></el-switch>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="8">
+                                        <el-form-item label="热图">
+                                            <el-switch v-model="form.autoHeatmap" placeholder="autoHeatmap"></el-switch>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="8">
+                                        <el-form-item label="深度线">
+                                            <el-switch v-model="form.autoWebstay" placeholder="autoHeatmap"></el-switch>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-form-item style="text-align: center;">
+                                    <el-button type="primary" @click="onSubmit">保存</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-table :data="tableData" border style="width: 100%">
+                            <el-table-column type="index" :index="getIndex" label="编号" width="180">
+                            </el-table-column>
+
+                            <el-table-column prop="name" label="地址">
+                                <template slot-scope="scope">
+                                    <el-link type="primary" :href="scope.row.url" target="_blank">{{scope.row.name}}
+                                    </el-link>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="备注" width="180">
+                            </el-table-column>
+                        </el-table>
+
+                    </el-col>
+                </el-row>
+            </el-main>
+        </el-container>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    form: {
+                        appkey: 'heatmaptest0916',
+                        debugMode: 2,
+                        uploadURL: 'http://192.168.220.105:8089',
+                        visitorConfigURL: 'http://192.168.220.105:8089',
+                        auto: true,
+                        autoTrack: false,
+                        autoHeatmap: false,
+                        autoWebstay: false,
+                        hash: true,
+                        autoProfile: true,
+                        sdkDirectory: '../../js/sdk/4.5/'
+                    },
+                    tableData: []
+                }
+            },
+            created: function () {
+                let data = []
+                for (let i = 1; i < 349; i++) {
+                    let path = '/349Demo/' + (this.getIndex(i - 1)) + '/index.html'
+                    data.push({
+                        url: '.' + path,
+                        name: window.location.protocol + '//' + window.location.hostname + window.location.pathname + path
+                    })
+                }
+                this.tableData = data
+            },
+            methods: {
+                onSubmit() {
+                    window.localStorage.setItem('ARK_CONFIG', JSON.stringify(this.form))
+                },
+                getIndex(index) {
+                    let indexString = (index + 1).toString()
+                    let num = 0
+                    for (let i = indexString.length; i < 3; i++) {
+                        indexString = '0' + indexString
+                    }
+                    return indexString
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
